@@ -18,8 +18,8 @@ server:
         backend:
           - path: /sap
             url: http://yars4hi4da01.yara.com:44301
-            client: '310'
-            destination: I4D_310
+            client: '100'
+            destination: I4D_100
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

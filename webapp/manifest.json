@@ -17,12 +17,12 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata/sap/API_SALES_ORDER_SRV/",
+        "uri": "/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd/0001/",
         "type": "OData",
         "settings": {
           "annotations": [],
           "localUri": "localService/metadata.xml",
-          "odataVersion": "2.0"
+          "odataVersion": "4.0"
         }
       }
     }
@@ -58,6 +58,9 @@
         "sap.ushell": {}
       }
     },
+    "extends": {
+        "component":"cus.sd.salesorderv2.manage"
+    },
     "contentDensities": {
       "compact": true,
       "cozy": true
@@ -75,47 +78,448 @@
         "settings": {}
       }
     },
+    "routing": {
+        "config": {
+          "async": true
+        },
+        "routes": [
+          {
+            "pattern": "SalesOrderManage({key}):?query:",
+            "name": "SalesOrderManageObjectPage",
+            "target": "SalesOrderManageObjectPage"
+          },
+          {
+            "pattern": "SalesOrderManage({key})/_Item({key2}):?query:",
+            "name": "SalesOrderItemObjectPage",
+            "target": "SalesOrderItemObjectPage"
+          },
+          {
+            "pattern": "SalesOrderManage({key})/_Text({key2}):?query:",
+            "name": "SalesOrderTextObjectPage",
+            "target": "SalesOrderTextObjectPage"
+          },
+          {
+            "pattern": "SalesOrderManage({key})/_Item({key2})/_ItemText({key3}):?query:",
+            "name": "SalesOrderItemTextObjectPage",
+            "target": "SalesOrderItemTextObjectPage"
+          }
+        ],
+        "targets": {
+          "SalesOrderManageObjectPage": {
+            "type": "Component",
+            "id": "SalesOrderManageObjectPage",
+            "name": "sap.fe.templates.ObjectPage",
+            "options": {
+              "settings": {
+                "entitySet": "SalesOrderManage",
+                "enhanceI18n": "i18n/HeaderOPi18n.properties",
+                "_disableLazyLoadingForMessages": true,
+                "content": {
+                  "header": {
+                    "actions": {
+                      "BillingBlock": {
+                        "text": "{@i18n>billingBlock}",
+                        "menu": [
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SetBillingBlock",
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.RemoveBillingBlock"
+                        ]
+                      },
+                      "DeliveryBlock": {
+                        "text": "{@i18n>deliveryBlock}",
+                        "menu": [
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SetDeliveryBlock",
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.RemoveDeliveryBlock"
+                        ]
+                      },
+                      "ChangeDoc": {
+                        "press": "cus.sd.salesorderv2.manage.reuse.controller.ChangeDocController.onPressShowChangeDoc",
+                        "visible": "{= !!%{SalesOrder}}",
+                        "enabled": true,
+                        "text": "{i18n>changeDoc}",
+                        "position": {
+                          "placement": "After",
+                          "anchor": "BillingBlock"
+                        }
+                      }
+                    }
+                  },
+                  "body": {
+                    "sections": {
+                      "ProcessFlowReuse": {
+                        "type": "XMLFragment",
+                        "name": "cus.sd.salesorderv2.manage.reuse.view.processflow",
+                        "title": "{@i18n>processFlow}",
+                        "position": {
+                          "placement": "After",
+                          "anchor": "StatusTab"
+                        },
+                        "visible": "{= !!%{SalesOrder}}"
+                      }
+                    }
+                  }
+                },
+                "navigation": {
+                  "_Item": {
+                    "detail": {
+                      "route": "SalesOrderItemObjectPage"
+                    }
+                  },
+                  "_Text": {
+                    "detail": {
+                      "route": "SalesOrderTextObjectPage"
+                    }
+                  }
+                },
+                "variantManagement": "Control",
+                "showRelatedApps": true,
+                "editableHeaderContent": false,
+                "sectionLayout": "Tabs",
+                "controlConfiguration": {
+                  "@com.sap.vocabularies.UI.v1.HeaderFacets": {
+                    "facets": {
+                      "OrganizationalDataHeader": {
+                        "flexSettings": {
+                          "designtime": "not-adaptable-visibility"
+                        }
+                      }
+                    }
+                  },
+                  "_Item/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "actions": {
+                      "BillingBlock": {
+                        "text": "{@i18n>billingBlock}",
+                        "menu": [
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SetBillingBlock::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType",
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.RemoveBillingBlock::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType"
+                        ]
+                      },
+                      "RejectionReason": {
+                        "text": "{@i18n>rejectionReason}",
+                        "menu": [
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SetRejectionReason",
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.RemoveRejectionReason"
+                        ]
+                      },
+                      "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.ProposeItems::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderManageType": {
+                        "enabled": "{__OperationControl/ProposeItems}"
+                      }
+                    },
+                    "tableSettings": {
+                      "type": "GridTable",
+                      "personalization": {
+                        "column": true,
+                        "sort": true,
+                        "filter": true
+                      },
+                      "creationMode": {
+                        "name": "CreationRow",
+                        "createAtEnd": true,
+                        "disableAddRowButtonForEmptyData": true
+                      },
+                      "selectionMode": "Single"
+                    }
+                  },
+                  "_Partner/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "tableSettings": {
+                      "personalization": false,
+                      "enableExport": false
+                    },
+                    "actions": {
+                      "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.CreatePartner::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderManageType": {
+                        "afterExecution": {
+                          "enableAutoScroll": true
+                        },
+                        "enabled": "{__OperationControl/CreatePartner}"
+                      }
+                    }
+                  },
+                  "_PricingElement/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "columns": {
+                      "DataField::ConditionType": {
+                        "width": "9%"
+                      },
+                      "DataField::ConditionTypeName": {
+                        "width": "17%"
+                      },
+                      "DataField::ConditionQuantity": {
+                        "width": "17%"
+                      },
+                      "DataField::ConditionAmount": {
+                        "width": "18%"
+                      },
+                      "DataField::ConditionIsForStatistics": {
+                        "width": "8%"
+                      },
+                      "DataField::ConditionIsManuallyChanged": {
+                        "width": "8%"
+                      }
+                    },
+                    "tableSettings": {
+                      "personalization": false,
+                      "enableExport": false,
+                      "selectionMode": "None",
+                      "enableFullScreen": true,
+                      "quickVariantSelection": {
+                        "paths": [
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#AllPriceElements"
+                          },
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#AllConditions"
+                          },
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#ManualConditions"
+                          },
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#StatisticalConditions"
+                          }
+                        ]
+                      }
+                    },
+                    "actions": {
+                      "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.CreatePricingElement::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderManageType": {
+                        "afterExecution": {
+                          "enableAutoScroll": true
+                        },
+                        "enabled": "{__OperationControl/CreatePricingElement}"
+                      }
+                    }
+                  },
+                  "_Text/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "columns": {
+                      "DataField::LongText": {
+                        "width": "60%"
+                      }
+                    },
+                    "tableSettings": {
+                      "personalization": false,
+                      "enableExport": false,
+                      "enablePaste": false,
+                      "creationMode": {
+                        "name": "Inline"
+                      }
+                    }
+                  },
+                  "_CreditLimitDetails/@com.sap.vocabularies.UI.v1.Chart#CreditLimitChart": {
+                    "requestGroupId": "LongRunners",
+                    "navigation": {
+                      "targetOutbound": {
+                        "outbound": "DisplayCreditExposure"
+                      }
+                    }
+                  },
+                  "_SlsVolumeNetAmtYearToDate/@com.sap.vocabularies.UI.v1.DataPoint#SalesVolume": {
+                    "requestGroupId": "LongRunners",
+                    "navigation": {
+                      "targetOutbound": {
+                        "outbound": "DisplaySalesVolumeYTD"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "SalesOrderItemObjectPage": {
+            "type": "Component",
+            "id": "SalesOrderItemObjectPage",
+            "name": "sap.fe.templates.ObjectPage",
+            "options": {
+              "settings": {
+                "content": {
+                  "header": {
+                    "actions": {
+                      "BillingBlock": {
+                        "text": "{@i18n>billingBlock}",
+                        "menu": [
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SetBillingBlock::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType",
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.RemoveBillingBlock::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType"
+                        ]
+                      },
+                      "RejectionReason": {
+                        "text": "{@i18n>rejectionReason}",
+                        "menu": [
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SetRejectionReason::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType",
+                          "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.RemoveRejectionReason::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "entitySet": "SalesOrderItem",
+                "variantManagement": "Control",
+                "editableHeaderContent": false,
+                "navigation": {
+                  "_ItemText": {
+                    "detail": {
+                      "route": "SalesOrderItemTextObjectPage"
+                    }
+                  }
+                },
+                "controlConfiguration": {
+                  "@com.sap.vocabularies.UI.v1.HeaderFacets": {
+                    "facets": {
+                      "TaxValueHeader": {
+                        "stashed": true
+                      }
+                    }
+                  },
+                  "@com.sap.vocabularies.UI.v1.DataPoint#NetValueHeader": {
+                    "navigation": {
+                      "targetSections": {
+                        "sectionId": "cus.sd.salesorderv2.manage::SalesOrderItemObjectPage--fe::FacetSection::SalesOrderItemPricing",
+                        "subSectionId": "cus.sd.salesorderv2.manage::SalesOrderItemObjectPage--fe::FacetSubSection::SalesOrderItemPricing"
+                      }
+                    }
+                  },
+                  "_ItemPartner/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "tableSettings": {
+                      "personalization": false,
+                      "enableExport": false
+                    },
+                    "actions": {
+                      "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.CreatePartner::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType": {
+                        "afterExecution": {
+                          "enableAutoScroll": true
+                        },
+                        "enabled": "{__OperationControl/CreatePartner}"
+                      }
+                    }
+                  },
+                  "_ScheduleLine/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "tableSettings": {
+                      "personalization": {
+                        "column": true
+                      },
+                      "enableExport": false
+                    }
+                  },
+                  "_ItemPricingElement/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "columns": {
+                      "DataField::ConditionType": {
+                        "width": "9%"
+                      },
+                      "DataField::ConditionTypeName": {
+                        "width": "17%"
+                      },
+                      "DataField::ConditionQuantity": {
+                        "width": "17%"
+                      },
+                      "DataField::ConditionAmount": {
+                        "width": "18%"
+                      },
+                      "DataField::ConditionIsForStatistics": {
+                        "width": "8%"
+                      },
+                      "DataField::ConditionIsManuallyChanged": {
+                        "width": "8%"
+                      }
+                    },
+                    "tableSettings": {
+                      "personalization": false,
+                      "enableExport": false,
+                      "selectionMode": "None",
+                      "enableFullScreen": true,
+                      "quickVariantSelection": {
+                        "paths": [
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#AllPriceElements"
+                          },
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#ActivePriceElements"
+                          },
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#ActiveConditions"
+                          },
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#ManualConditions"
+                          },
+                          {
+                            "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#StatisticalConditions"
+                          }
+                        ]
+                      }
+                    },
+                    "actions": {
+                      "DataFieldForAction::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.CreatePricingElement::com.sap.gateway.srvd.c_salesordermanage_sd.v0001.SalesOrderItemType": {
+                        "afterExecution": {
+                          "enableAutoScroll": true
+                        },
+                        "enabled": "{__OperationControl/CreatePricingElement}"
+                      }
+                    }
+                  },
+                  "_ItemText/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "columns": {
+                      "DataField::LongText": {
+                        "width": "60%"
+                      }
+                    },
+                    "tableSettings": {
+                      "personalization": false,
+                      "enableExport": false,
+                      "enablePaste": false,
+                      "creationMode": {
+                        "name": "Inline"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "SalesOrderTextObjectPage": {
+            "type": "Component",
+            "id": "SalesOrderTextObjectPage",
+            "name": "sap.fe.templates.ObjectPage",
+            "options": {
+              "settings": {
+                "entitySet": "SalesOrderText",
+                "editableHeaderContent": false,
+                "controlConfiguration": {
+                  "@com.sap.vocabularies.UI.v1.FieldGroup#TextDataLongText": {
+                    "fields": {
+                      "DataField::LongText": {
+                        "formatOptions": {
+                          "textLinesEdit": 20
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "SalesOrderItemTextObjectPage": {
+            "type": "Component",
+            "id": "SalesOrderItemTextObjectPage",
+            "name": "sap.fe.templates.ObjectPage",
+            "options": {
+              "settings": {
+                "entitySet": "SalesOrderItemText",
+                "editableHeaderContent": false,
+                "controlConfiguration": {
+                  "@com.sap.vocabularies.UI.v1.FieldGroup#TextDataLongText": {
+                    "fields": {
+                      "DataField::LongText": {
+                        "formatOptions": {
+                          "textLinesEdit": 20
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
     "resources": {
       "css": [
         {
           "uri": "css/style.css"
         }
       ]
-    },
-    "routing": {
-      "config": {
-        "routerClass": "sap.m.routing.Router",
-        "viewType": "XML",
-        "async": true,
-        "viewPath": "com.sap.fiori.processsalesorderv2.view",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "clearControlAggregation": false
-      },
-      "routes": [
-        {
-          "name": "RouteExtension",
-          "pattern": "RouteExtension",
-          "target": [
-            "TargetExtension"
-          ]
-        }
-      ],
-      "targets": {
-        "TargetExtension": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "Extension",
-          "viewName": "Extension"
-        }
-      }
-    },
-    "rootView": {
-      "viewName": "com.sap.fiori.processsalesorderv2.view.App",
-      "type": "XML",
-      "async": true,
-      "id": "App"
     }
   }
 }

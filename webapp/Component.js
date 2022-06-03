@@ -1,31 +1,18 @@
-sap.ui.define([
-        "sap/ui/core/UIComponent",
-        "sap/ui/Device",
-        "com/sap/fiori/processsalesorderv2/model/models"
-    ],
-    function (UIComponent, Device, models) {
-        "use strict";
+jQuery.sap.declare("com.sap.fiori.processsalesorderv2.Component");
+jQuery.sap.registerModulePath("cus.sd.salesorderv2.manage",'/sap/bc/ui5_ui5/sap/sd_sov2_mans1');
+jQuery.sap.registerModulePath("sap.nw.core.changedocs.lib.reuse",'	/sap/bc/ui5_ui5/sap/NW_APS_CHD_LIB');
+jQuery.sap.registerModulePath("sap.cus.sd.lib.processflow",'/sap/bc/ui5_ui5/sap/sd_reuse_pfs1');
+jQuery.sap.registerModulePath("sap.cus.sd.lib.slsdoc.manage",'/sap/bc/ui5_ui5/sap/sd_reuse_sdocs1');
+jQuery.sap.registerModulePath("sap.s4h.cfnd.featuretoggle",'/sap/bc/ui5_ui5/sap/featuretoggles1');
+sap.ui.component.load({
+    name : "cus.sd.salesorderv2.manage",
+    url: "/sap/bc/ui5_ui5/sap/sd_sov2_mans1"
+});
 
-        return UIComponent.extend("com.sap.fiori.processsalesorderv2.Component", {
-            metadata: {
-                manifest: "json"
-            },
-
-            /**
-             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-             * @public
-             * @override
-             */
-            init: function () {
-                // call the base component's init function
-                UIComponent.prototype.init.apply(this, arguments);
-
-                // enable routing
-                this.getRouter().initialize();
-
-                // set the device model
-                this.setModel(models.createDeviceModel(), "device");
-            }
-        });
+this.cus.sd.salesorderv2.manage.Component.extend("com.sap.fiori.processsalesorderv2.Component",{
+    metadata: {
+        manifest : "json"
     }
-);
+
+    
+})
